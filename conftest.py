@@ -1,3 +1,8 @@
+'''
+Descripttion: 
+Author: zlj
+Date: 2023-03-29 10:21:01
+'''
 
 from playwright.sync_api import sync_playwright
 import pytest
@@ -29,6 +34,8 @@ def login_auth():
     page.locator('#password').fill("19956596012")
      # 保存验证码 
     page.locator("img").screenshot(path='yzm.png')  
+    page.wait_for_timeout(2000)
+
      
     # 识别验证码  
     ocr = ddddocr.DdddOcr(show_ad=False)  # 实例化  
@@ -42,13 +49,11 @@ def login_auth():
     page.get_by_role("button", name="登 录").click()
     page.wait_for_timeout(5000)
 
-
     storage = context.storage_state(path="cookie.json")
     context = browser.new_context(storage_state="cookie.json")
-    # page=context.new_page()
 
     print('conf保存cookie')
-    print(context)
+    
     yield context
     # 实现用例后置
     print('auth,conf中关')
@@ -57,4 +62,22 @@ def login_auth():
     p.stop()
     # page = context.new_page()
     # page.goto('/visualize-runing')
-      
+
+@pytest.fixture(scope='session')      
+def login_api():
+   with sync_playwright() as p:
+    browser = p.chromium.launch(headless=False)
+    context = browser.new_context()
+    page = context.new_page()
+
+    # page.goto("http://192.168.3.75:30392/login")
+
+ 
+
+    # 发post请求
+    resp = page.request.get(
+        url="http://192.168.3.75:30391/auth/captcha",
+       
+    )
+
+    print(resp.body())

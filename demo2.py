@@ -1,8 +1,4 @@
-'''
-Descripttion: 
-Author: zlj
-Date: 2023-08-09 09:51:47
-'''
+
 from playwright.sync_api import Playwright, sync_playwright, expect
 
 
